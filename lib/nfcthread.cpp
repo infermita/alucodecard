@@ -2,6 +2,7 @@
 #include "lib/httpclient.h"
 #include "lib/writelcd.h"
 #include <QDebug>
+#include <QNetworkInterface>
 
 NfcThread::NfcThread()
 {
@@ -13,12 +14,31 @@ void NfcThread::run(){
         .nmt = NMT_ISO14443A,
         .nbr = NBR_106,
     };
-    QString id,url,lcd,repeat = " ";;
+    QString id,url,lcd,ip,repeat = " ";
     HttpClient http;
     int i;
+    bool ipcheck = true;
     WriteLcd *wLcd = new WriteLcd();
+
+    wLcd->clear();
+    wLcd->write(0,0,"Attesa rete");
+
+    while(ipcheck){
+
+        ip = QNetworkInterface::interfaceFromName("wlan0").addressEntries().first().ip().toString();
+
+        qDebug() << "Attesa rete con ip: " << ip << " count: " << QString::number(ip.split(".").count());
+
+        if(ip.split(".").count()==4)
+            ipcheck = false;
+        else
+            sleep(1);
+    }
+
+
     wLcd->clear();
     wLcd->write(0,0,"Attesa badge");
+
     while(1){
          nfc_init(&context);
          pnd = nfc_open(context, NULL);
