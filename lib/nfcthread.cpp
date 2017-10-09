@@ -48,7 +48,7 @@ void NfcThread::run(){
                      lcd = "C:"+id;
                      lcd = lcd+repeat.repeated(16 - lcd.length());
                      wLcd->write(0,0,lcd.toUtf8().data());
-                     url = "/default/json/newcard/key/"+id;
+                     url = "/default/json/newcard/key/"+id+"/sessionid/1";
                      http.Get(url);
                      while(!nfc_initiator_target_is_present(pnd,&nt)){
                          sleep(1);
